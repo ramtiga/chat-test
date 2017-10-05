@@ -7,19 +7,35 @@
 //
 
 import UIKit
+import FirebaseCore
+import Firebase
+import FirebaseDatabase
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
+  
+  @IBOutlet weak var txtViewMessage: UITextView!
+  @IBOutlet weak var txtName: UITextField!
+  @IBOutlet weak var txtInputMessage: UITextField!
 
+  var dbRef: DatabaseReference!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+    txtInputMessage.delegate = self
+    dbRef = Database.database().reference()
   }
 
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
   }
 
-
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    let message = ["name": txtName.text!, "message": txtInputMessage.text!]
+    dbRef.childByAutoId().setValue(message)
+    
+    textField.resignFirstResponder()
+    txtInputMessage.text = ""
+    return true
+  }
 }
 
