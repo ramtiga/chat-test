@@ -19,10 +19,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
   var dbRef: DatabaseReference!
   
-  override func viewDidLoad() {
+   override func viewDidLoad() {
     super.viewDidLoad()
     txtInputMessage.delegate = self
+    
     dbRef = Database.database().reference()
+    dbRef.observe(DataEventType.childAdded, with: {(snap) in
+      if let name = (snap.value! as AnyObject).object(forKey: "name") as? String,
+        let message = (snap.value! as AnyObject).object(forKey: "message") as? String {
+        self.txtViewMessage.text! = "\(self.txtViewMessage.text!)\n\(name) : \(message)"
+      }
+    })
   }
 
   override func didReceiveMemoryWarning() {
